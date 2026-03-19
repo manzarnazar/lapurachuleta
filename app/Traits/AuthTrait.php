@@ -228,10 +228,19 @@ trait AuthTrait
     public function register(Request $request): JsonResponse
     {
         try {
+            // Allow clients to omit `mobile` by sending `null` or `""`.
+            // We'll normalize empty string to NULL before validation/creation.
+            if ($request->has('mobile')) {
+                $mobileInput = $request->input('mobile');
+                if (is_null($mobileInput) || (is_string($mobileInput) && trim($mobileInput) === '')) {
+                    $request->merge(['mobile' => null]);
+                }
+            }
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|unique:users',
-                'mobile' => 'required|unique:users|numeric',
+                'mobile' => 'nullable|unique:users,mobile|numeric',
                 'password' => 'required|string|min:6|confirmed',
                 'country' => 'nullable|string|max:255',
                 'iso_2' => 'nullable|string|max:2'
@@ -239,7 +248,7 @@ trait AuthTrait
             $user = User::create([
                 'name' => $validated['name'],
                 'email' => $validated['email'],
-                'mobile' => $validated['mobile'],
+                'mobile' => $validated['mobile'] ?? null,
                 'country' => $validated['country'] ?? null,
                 'iso_2' => $validated['iso_2'] ?? null,
                 'password' => Hash::make($validated['password'])
