@@ -173,7 +173,7 @@ Route::get('brands/sidebar', [BrandApiController::class, 'sidebarBrands']);
 
 // products
 Route::prefix('products')->name('products.')->group(function () {
-//    Route::get('/', [ProductApiController::class, 'getAllProduct']);
+   Route::get('/', [ProductApiController::class, 'getAllProduct']);
     Route::get('/sidebar-filters', [ProductSidebarApiController::class, 'filters'])->name('products.sidebar-filters');
     Route::get('/get-types', [ProductSidebarApiController::class, 'getTypes'])->name('products.get-types');
     Route::get('/search-by-keywords', [ProductApiController::class, 'searchByKeywords']);
@@ -187,7 +187,7 @@ Route::prefix('products')->name('products.')->group(function () {
 Route::prefix('stores')->name('stores.')->group(function () {
     Route::get('/', [StoreApiController::class, 'index']);
     Route::get('/{slug}', [StoreApiController::class, 'show']);
-//    Route::get('/zone', [StoreApiController::class, 'getStoresByZone']);
+   Route::get('/zone', [StoreApiController::class, 'getStoresByZone']);
 });
 
 // delivery zone check
