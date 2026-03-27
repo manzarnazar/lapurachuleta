@@ -238,8 +238,8 @@ class SettingController extends Controller
             $this->authorize('viewSetting', [Setting::class, $variable]);
             $settings = $transformedSetting->toArray(request())['value'] ?? [];
 
-            $setting = Setting::find(SettingTypeEnum::AUTHENTICATION());
-            $googleApiKey = $setting->value['googleApiKey'] ?? null;
+            $authenticationSetting = $this->settingService->getOrCreateDefaultSetting(SettingTypeEnum::AUTHENTICATION());
+            $googleApiKey = $authenticationSetting->value['googleApiKey'] ?? null;
             return view('admin.settings.' . $variable, [
                 'settings' => $settings,
                 'googleApiKey' => $googleApiKey
