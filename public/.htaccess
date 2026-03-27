@@ -27,3 +27,23 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+<IfModule mod_php.c>
+    php_value upload_max_filesize 4M
+    php_value post_max_size 20M
+    php_value max_file_uploads 20
+</IfModule>
+
+<IfModule mod_php7.c>
+    php_value upload_max_filesize 4M
+    php_value post_max_size 20M
+    php_value max_file_uploads 20
+</IfModule>
+
+<IfModule mod_php8.c>
+    php_value upload_max_filesize 4M
+    php_value post_max_size 20M
+    php_value max_file_uploads 20
+</IfModule>
+
+LimitRequestBody 20971520

@@ -11,6 +11,8 @@ use Illuminate\Validation\Rules\Enum;
 
 class StoreSellerRequest extends FormRequest
 {
+    private const SELLER_DOC_MAX_KB = 2048;
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -42,10 +44,11 @@ class StoreSellerRequest extends FormRequest
             'country' => 'required|string|max:255',
             'latitude' => 'nullable|string|max:255',
             'longitude' => 'nullable|string|max:255',
-            'business_license' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'articles_of_incorporation' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'national_identity_card' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
-            'authorized_signature' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            // Mobile app targets 1MB image compression; API allows 2MB for tolerance.
+            'business_license' => 'required|image|mimes:jpeg,png,jpg,webp|max:' . self::SELLER_DOC_MAX_KB,
+            'articles_of_incorporation' => 'required|image|mimes:jpeg,png,jpg,webp|max:' . self::SELLER_DOC_MAX_KB,
+            'national_identity_card' => 'required|image|mimes:jpeg,png,jpg,webp|max:' . self::SELLER_DOC_MAX_KB,
+            'authorized_signature' => 'required|image|mimes:jpeg,png,jpg,webp|max:' . self::SELLER_DOC_MAX_KB,
         ];
         if (!Route::is('seller-api.register')) {
             $rules['verification_status'] = ['required', new Enum(SellerVerificationStatusEnum::class)];
@@ -61,9 +64,13 @@ class StoreSellerRequest extends FormRequest
             'mobile.required_without' => __('validation.required', ['attribute' => 'Mobile']),
             'password.required_without' => __('validation.required', ['attribute' => 'Password']),
             'business_license.required' => __('validation.required', ['attribute' => 'Business License']),
+            'business_license.max' => __('validation.max.file', ['attribute' => 'Business License', 'max' => self::SELLER_DOC_MAX_KB / 1024]),
             'articles_of_incorporation.required' => __('validation.required', ['attribute' => 'Articles of Incorporation']),
+            'articles_of_incorporation.max' => __('validation.max.file', ['attribute' => 'Articles of Incorporation', 'max' => self::SELLER_DOC_MAX_KB / 1024]),
             'national_identity_card.required' => __('validation.required', ['attribute' => 'National Identity Card']),
+            'national_identity_card.max' => __('validation.max.file', ['attribute' => 'National Identity Card', 'max' => self::SELLER_DOC_MAX_KB / 1024]),
             'authorized_signature.required' => __('validation.required', ['attribute' => 'Authorized Signature']),
+            'authorized_signature.max' => __('validation.max.file', ['attribute' => 'Authorized Signature', 'max' => self::SELLER_DOC_MAX_KB / 1024]),
         ];
     }
 }
